@@ -46,6 +46,17 @@ Router.post("/addProduct", auth, async (req, res) => {
     await ProductModel.insertMany(req.body);
     res.json({ "msg": "data added" })
 })
+Router.patch("/patch/:id", auth, async (req, res) => {
+    await ProductModel.findByIdAndUpdate({ _id: req.params.id }, req.body)
+    res.json({ "msg": "Data has been updated!" });
+})
+Router.delete("/delete/:id", auth, async (req, res) => {
+    await ProductModel.findByIdAndDelete({ _id: req.params.id })
+    res.json({ "msg": "Data has been Deleted!" });
+})
+Router.get("/product/:id", auth, async (req, res) => {
+    res.send(await ProductModel.findById({ _id: req.params.id }))
+})
 Router.get("/addtocart/:id", auth, async (req, res) => {
     const { id } = req.params;
     const token = req.headers.authorization;
