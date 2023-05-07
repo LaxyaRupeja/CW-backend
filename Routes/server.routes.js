@@ -51,6 +51,30 @@ Router.get("/getProd", auth, async (req, res) => {
         res.send(await ProductModel.find())
     }
 })
+Router.get("/prodfilter/:price", auth, async (req, res) => {
+    const { price } = req.params;
+    if (price == 500) {
+        res.send(await ProductModel.find({ price: { $gte: 500, $lte: 1000 } }))
+    }
+    else if (price == 1000) {
+        res.send(await ProductModel.find({ price: { $gte: 1000, $lte: 2000 } }))
+    }
+    else if (price == 2000) {
+        res.send(await ProductModel.find({ price: { $gt: 2000 } }))
+    }
+})
+Router.get("/prodcat/:cat", auth, async (req, res) => {
+    const { cat } = req.params;
+    if (cat == "Saree") {
+        res.send(await ProductModel.find({ category: "Saree" }))
+    }
+    else if (cat == "Kurta") {
+        res.send(await ProductModel.find({ category: "Kurta" }))
+    }
+    else if (cat == "Home-Decor") {
+        res.send(await ProductModel.find({ category: "Home-Decor" }))
+    }
+})
 Router.post("/addProduct", auth, async (req, res) => {
     await ProductModel.insertMany(req.body);
     res.json({ "msg": "data added" })
