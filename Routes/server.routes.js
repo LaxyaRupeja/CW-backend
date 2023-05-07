@@ -40,7 +40,16 @@ Router.post('/login', async (req, res) => {
     }
 })
 Router.get("/getProd", auth, async (req, res) => {
-    res.send(await ProductModel.find())
+    const { sort } = req.query;
+    if (sort == "low") {
+        res.send(await ProductModel.find().sort({ price: 1 }))
+    }
+    else if (sort == "high") {
+        res.send(await ProductModel.find().sort({ price: -1 }))
+    }
+    else {
+        res.send(await ProductModel.find())
+    }
 })
 Router.post("/addProduct", auth, async (req, res) => {
     await ProductModel.insertMany(req.body);
@@ -88,4 +97,5 @@ Router.get("/complete", auth, async (req, res) => {
         }
     });
 })
+
 module.exports = { Router }
