@@ -160,4 +160,19 @@ Router.patch("/addAddress", auth, async (req, res) => {
         }
     });
 })
+Router.get("/removeCart/:id", auth, async (req, res) => {
+    const token = req.headers.authorization;
+    jwt.verify(token, 'shhhhh', async (err, decoded) => {
+        if (decoded) {
+            let person = await UserModel.findOne({ _id: decoded.userID });
+            let newFilter = person.order.filter((el) => el != req.params.id)
+            person.order = newFilter;
+            await UserModel.findByIdAndUpdate({ _id: decoded.userID }, person);
+            res.json({ "msg": "removed" })
+        }
+        if (err) {
+            res.status(404).json({ 'msg': 'Please login first!' })
+        }
+    });
+})
 module.exports = { Router }
