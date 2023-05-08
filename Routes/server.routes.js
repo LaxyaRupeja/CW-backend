@@ -121,5 +121,43 @@ Router.get("/complete", auth, async (req, res) => {
         }
     });
 })
-
+Router.get("/getUserOrder", auth, async (req, res) => {
+    const token = req.headers.authorization;
+    jwt.verify(token, 'shhhhh', async (err, decoded) => {
+        if (decoded) {
+            let person = await UserModel.findOne({ _id: decoded.userID }).populate("order");
+            res.send(person)
+        }
+        if (err) {
+            res.status(404).json({ 'msg': 'Please login first!' })
+        }
+    });
+})
+Router.get("/getUserHistory", auth, async (req, res) => {
+    const token = req.headers.authorization;
+    jwt.verify(token, 'shhhhh', async (err, decoded) => {
+        if (decoded) {
+            let person = await UserModel.findOne({ _id: decoded.userID }).populate("orderHist");
+            res.send(person)
+        }
+        if (err) {
+            res.status(404).json({ 'msg': 'Please login first!' })
+        }
+    });
+})
+Router.patch("/addAddress", auth, async (req, res) => {
+    const token = req.headers.authorization;
+    jwt.verify(token, 'shhhhh', async (err, decoded) => {
+        if (decoded) {
+            let person = await UserModel.findOne({ _id: decoded.userID });
+            person.address.push(req.body);
+            console.log(person.address)
+            await UserModel.findByIdAndUpdate({ _id: decoded.userID }, person);
+            res.json({ "msg": "Address added" })
+        }
+        if (err) {
+            res.status(404).json({ 'msg': 'Please login first!' })
+        }
+    });
+})
 module.exports = { Router }
